@@ -54,6 +54,13 @@ startBtn.addEventListener("click", startTimer);
 pauseBtn.addEventListener("click", pauseTimer);
 resetBtn.addEventListener("click", resetTimer);
 
+// Task button event listener
+addTaskBtn.addEventListener("click", addTask);
+
+// Load saved tasks and render them
+loadTasks();
+renderTasks();
+
 // Initialize display on page load
 updateDisplay();
 
@@ -80,4 +87,54 @@ function addTask() {
   taskList.appendChild(li);
 
   taskInput.value = "";
+}
+
+function addTask() {
+  const taskText = taskInput.value.trim();
+  if (taskText === "") return;
+
+  const task = { text: taskText };
+  tasks.push(task);
+  saveTasks();
+
+  renderTasks();
+  taskInput.value = "";
+}
+
+// Store tasks in memory when page is refreshed for example
+let tasks = [];
+
+// Save tasks to localStorage
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+// Load tasks from localStorage
+function loadTasks() {
+  const stored = localStorage.getItem("tasks");
+  if (stored) {
+    tasks = JSON.parse(stored);
+  }
+}
+
+// Render tasks to the page
+function renderTasks() {
+  taskList.innerHTML = ""; // Clear list before re-rendering
+
+  tasks.forEach((task, index) => {
+    const li = document.createElement("li");
+    li.textContent = task.text;
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.addEventListener("click", () => {
+      tasks.splice(index, 1);
+      saveTasks();
+      renderTasks();
+    });
+
+    li.appendChild(deleteBtn);
+    taskList.appendChild(li);
+  });
 }
