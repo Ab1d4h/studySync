@@ -9,9 +9,16 @@ const startBtn = document.getElementById("startBtn");
 const pauseBtn = document.getElementById("pauseBtn");
 const resetBtn = document.getElementById("resetBtn");
 
+const progressBar = document.getElementById("progressBar");
+
 function updateDisplay() {
   minutesDisplay.textContent = String(minutes).padStart(2, "0");
   secondsDisplay.textContent = String(seconds).padStart(2, "0");
+  
+  let totalSeconds = 25 * 60; // default session length in seconds
+  let remainingSeconds = minutes * 60 + seconds;
+  let progress = ((totalSeconds - remainingSeconds) / totalSeconds) * 100;
+  progressBar.style.width = progress + "%";
 }
 
 function startTimer() {
