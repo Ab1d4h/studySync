@@ -1,3 +1,5 @@
+let mode = "study"; // can be "study" or "break"
+
 let timer;
 let minutes = 25;
 let seconds = 0;
@@ -14,7 +16,7 @@ const progressBar = document.getElementById("progressBar");
 function updateDisplay() {
   minutesDisplay.textContent = String(minutes).padStart(2, "0");
   secondsDisplay.textContent = String(seconds).padStart(2, "0");
-  
+
   let totalSeconds = 25 * 60; // default session length in seconds
   let remainingSeconds = minutes * 60 + seconds;
   let progress = ((totalSeconds - remainingSeconds) / totalSeconds) * 100;
@@ -22,16 +24,25 @@ function updateDisplay() {
 }
 
 function startTimer() {
-  if (isRunning) return;
-  isRunning = true;
-
+  clearInterval(timer);
   timer = setInterval(() => {
     if (seconds === 0) {
       if (minutes === 0) {
         clearInterval(timer);
-        isRunning = false;
-        alert("Time's up!");
-        return;
+
+        if (mode === "study") {
+          mode = "break";
+          minutes = 5;
+          seconds = 0;
+          alert("Study session complete! Time for a 5-minute break.");
+          startTimer();
+        } else {
+          mode = "study";
+          minutes = 25;
+          seconds = 0;
+          alert("Break over! Time to focus.");
+          startTimer();
+        }
       } else {
         minutes--;
         seconds = 59;
@@ -57,7 +68,9 @@ function resetTimer() {
 }
 
 // Event listeners
-startBtn.addEventListener("click", startTimer);
+startBtn.addEventListener("click", () => {
+    (startTimer);
+});
 pauseBtn.addEventListener("click", pauseTimer);
 resetBtn.addEventListener("click", resetTimer);
 
